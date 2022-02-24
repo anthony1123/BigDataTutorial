@@ -3,7 +3,7 @@ package uk.ac.gla.dcs.bigdata.structures;
 import java.io.Serializable;
 
 /**
- * This is a class representing a statistics for a single steam game
+ * 这是一个代表单个 Steam 游戏统计数据的类
  * @author Richard
  *
  */

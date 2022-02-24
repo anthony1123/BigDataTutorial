@@ -6,25 +6,22 @@ import org.apache.spark.sql.Row;
 import uk.ac.gla.dcs.bigdata.structures.SteamGameStats;
 
 /**
- * This map function converts a single row in the steam stats dataset to a
- * SteamGameStats object
- * @author Richard
- *
+
+ *这个map函数将steam数据集中每一行转换为一个SteamGameStats对象，
  */
+
 public class SteamStatsFormatter implements MapFunction<Row,SteamGameStats> {
 
 	private static final long serialVersionUID = 1202272537118936631L;
 
 	@Override
-	/**
-	 * This is the method that gets called for each input row, converting it into
-	 * a SteamGameStats object; Row in this case is assumed to have been read by
-	 * spark.read().csv() which does not infer the types of each column in the
-	 * csv file, and as such just considers each entry to be a string, hence
-	 * we will need to do the conversion to ints and doubles, here as well.
+	/**这是为每个输入行调用的方法，将其转换为SteamGameStats 对象；
+	 * 在这种情况下，假定Rows已被 * spark.read ().csv() 读取，它不会推断 * csv 文件中每一列的数据类型，仅将每个条目视为字符串，
+	 * 因此我们需要在这里转换为整数和双精度数
 	 */
+	
+	
 	public SteamGameStats call(Row value) throws Exception {
-		
 		
 		
 		SteamGameStats gameStats = new SteamGameStats(
