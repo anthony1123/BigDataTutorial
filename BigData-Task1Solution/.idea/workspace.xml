@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7b86c08c-a69c-40af-83d7-f7beb07935c7" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.project" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.m2e.core.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Steam/Readme.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Steam/games_features.sample.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hadoop" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hadoop.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hadoop.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hadoop.exp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hadoop.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hdfs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hdfs.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hdfs.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hdfs.exp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/hdfs.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/libwinutils.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/mapred" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/mapred.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/rcc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/winutils.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/yarn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/hadoop/bin/yarn.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/logback-test.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Tutorial2Test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/apps/SparkTutorial2a.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/apps/SparkTutorial2b.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/apps/Task1SolutionFlatMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/functions/flatmap/PlatformFilterFlatMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/functions/flatmap/RequirementsFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/functions/map/SteamGameToMetaCriticScoreMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/functions/map/SteamGamesToListMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/functions/map/SteamStatsFormatter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/functions/reducer/IntSumReducer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/functions/reducer/SameTitleReducer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/structures/SteamGameList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uk/ac/gla/dcs/bigdata/structures/SteamGameStats.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/maven/BigData-SparkTutorial2/BigData-SparkTutorial2/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/maven/BigData-SparkTutorial2/BigData-SparkTutorial2/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hadoop" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hadoop.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hadoop.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hadoop.exp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hadoop.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hdfs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hdfs.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hdfs.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hdfs.exp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/hdfs.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/libwinutils.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/mapred" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/mapred.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/rcc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/winutils.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/yarn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hadoop/bin/yarn.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/logback-test.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/test/java/Tutorial2Test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/apps/SparkTutorial2a.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/apps/SparkTutorial2b.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/apps/Task1SolutionFlatMap.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/functions/flatmap/PlatformFilterFlatMap.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/functions/flatmap/RequirementsFilter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/functions/map/SteamGameToMetaCriticScoreMap.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/functions/map/SteamGamesToListMap.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/functions/map/SteamStatsFormatter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/functions/reducer/IntSumReducer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/functions/reducer/SameTitleReducer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/structures/SteamGameList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/uk/ac/gla/dcs/bigdata/structures/SteamGameStats.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/logback-test.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectId" id="25htGlfiujfC68sszSjVapEq26Z" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.build" />
+  </component>
+  <component name="RunManager" selected="Application.SparkTutorial2a">
+    <configuration name="SparkTutorial2a" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="uk.ac.gla.dcs.bigdata.apps.SparkTutorial2a" />
+      <module name="BigData-SparkTutorial2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="uk.ac.gla.dcs.bigdata.apps.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Tutorial2Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="BigData-SparkTutorial2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.java.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test.java" />
+      <option name="MAIN_CLASS_NAME" value="test.java.Tutorial2Test" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.SparkTutorial2a" />
+        <item itemvalue="JUnit.Tutorial2Test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7b86c08c-a69c-40af-83d7-f7beb07935c7" name="Changes" comment="" />
+      <created>1645991055363</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1645991055363</updated>
+      <workItem from="1645991057279" duration="18000" />
+      <workItem from="1645991084936" duration="196000" />
+      <workItem from="1645991431369" duration="159000" />
+      <workItem from="1645991604739" duration="734000" />
+      <workItem from="1646054325898" duration="28000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
