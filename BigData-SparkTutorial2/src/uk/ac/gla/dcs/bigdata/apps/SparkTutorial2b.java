@@ -16,18 +16,18 @@ import uk.ac.gla.dcs.bigdata.functions.reducer.IntSumReducer;
 import uk.ac.gla.dcs.bigdata.structures.SteamGameStats;
 
 /**
-
- *这是第二个Apache Spark教程应用程序（B部分），
- *它包含一个基本的预建Spark应用程序，
- *你可以运行它来确保你的环境设置正确，
- *其中有map、flatmap和reduce function的例子。
+ * This is the second Apache Spark tutorial application (part B), it contains a basic pre-built Spark
+ * app that you can run to make sure that your environment is set up correctly, with examples
+ * of both a map, flatmap and reduce function.
+ * @author Richard
+ *
  */
 public class SparkTutorial2b {
 
 	public SparkTutorial2b() {}
 
 	/**
-	 *  在我们的样本中获取 Steam 游戏的平均 metacritic 分数
+	 * Get the average metacritic score of steam games in our sample
 	 * @param includePC - include PC games
 	 * @param includeLinux - include Linux games
 	 * @param includeMac - include MacOS games
@@ -35,88 +35,107 @@ public class SparkTutorial2b {
 	 */
 	public double getAverageMetaCriticScore(boolean includePC, boolean includeLinux, boolean includeMac) {
 
-		File hadoopDIR = new File("resources/hadoop/");
-		System.setProperty("hadoop.home.dir", hadoopDIR.getAbsolutePath());
+		// Spark relies on some legacy components of hadoop to manage data input/output, this means we need to
+		// give Spark a copy of some hadoop executables, in this case we have included a copy of these in the
+		// resources/hadoop/ directory.
+		File hadoopDIR = new File("resources/hadoop/"); // represent the hadoop directory as a Java file so we can get an absolute path for it
+		System.setProperty("hadoop.home.dir", hadoopDIR.getAbsolutePath()); // set the JVM system property so that Spark finds it
 
+		// SparkConf is the configuration for the spark session we are going to create
+		// setMaster specifies how we want the application to be run, in this case in local mode with 2 cores
+		// setAppName specifies the name of the spark session we will create, this is in effect a unique identifier for our session
 		SparkConf conf = new SparkConf()
 				.setMaster("local[2]")
 				.setAppName("SparkTutorial1");
 
+
+		// To run a Spark job we need to create a SparkSession, in local mode, this creates a temporary spark cluster
+		// on your local machine to run the job on.
 		SparkSession spark = SparkSession
 				.builder()
 				.config(conf)
 				.getOrCreate();
 
+		// --------------------------------------------------------------------------------------
+		// Spark Application Topology Starts Here
+		// --------------------------------------------------------------------------------------
+
+		//-----------------------------------------
+		// Data Input
+		//-----------------------------------------
+		// Lets read in some statistics of Steam games from a file
 		Dataset<Row> steamGamesAsRowTable = spark
 				.read()
 				.option("header", "true")
 				.csv("data/Steam/games_features.sample.csv");
 
-
 		
-		// Tutorial 2b Note: in this case, 转化为 SteamGameStats 是不高效的, 
-		//因为如果我们只想对输入数据集中的单列数字进行平均，
-		//那么Spark SQL的内置函数就能非常有效地帮我们完成这个任务。 
-		//But we will do it the long way here for illustration.
+		
+		// Row objects are a general representation of data items in Spark, a Dataset<Row> represents a set of Rows, i.e. its like a Table
+		// Dataset<Row> support lots of out-of-the-box transformations using Spark SQL, but as we are more interested in what happens 'under-the-hood'
+		// in Spark, we will be converting our Rows to more specialist data types
+		
+		// Tutorial 2b Note: in this case, doing the conversion to SteamGameStats is inefficient, since if we are only looking to average numbers in a
+		// single column of the input dataset then Spark SQL's in-built functions would be able to do this very efficiently for us. But we will do it the
+		// long way here for illustration.
+		
+		//-----------------------------------------
+		// Data Transformations
+		//-----------------------------------------
 
+		// As a simple test, lets convert each Row object to a SteamGameStats object, such that we have easier access to get/set methods for each
+
+		// Spark needs to understand how to serialize (i.e. package for storage or network transfer) any Java object type we are going to use, since 
+		// in a distributed setting our transformations may happen on different machines, or intermediate results may need to be stored between processing
+		// stages. We do this by defining an Encoder for the object. In this case, we going to use a new class SteamGameStats, so we need an encoder for it.
+		// Encoders.bean() can be used to automatically construct an encoder for an object, so long as the object 1) is not native (e.g. an int or String) and
+		// the object is inherently Serializable. If dealing with native Java types then you can use Encoders.<NativeType>(), e.g. Encoders.STRING().
 		Encoder<SteamGameStats> steamGameStatsEncoder = Encoders.bean(SteamGameStats.class);
-		
-		/*
-		 * 在Spark中，数据转换是通过调用数据集的转换函数来指定的。
-		 * 最基本的转换是 "map"，它将数据集中的每个项目转换为一个新的项目（可能是不同的类型）。
-		 * map函数需要两个参数作为输入 
-		 * - 一个实现MapFunction<InputType,OutputType>的类
-  		 * - 一个输出类型的编码器（我们在上一步中刚刚创建了这个编码器）
-		 */
-		
+
+		// In Spark, data tranformations are specifed by calling transformation functions on Datasets
+		// The most basic transformation is 'map', this converts each item in the dataset to a new item (that may be of a different type)
+		// The map function takes as input two parameters
+		//   - A class that implements MapFunction<InputType,OutputType>
+		//   - An encoder for the output type (which we just created in the previous step)
 		Dataset<SteamGameStats> steamGames = steamGamesAsRowTable.map(new SteamStatsFormatter(), steamGameStatsEncoder);
 
 		//-----------------------------------------
 		// Tutorial 2a Additions
 		//-----------------------------------------
 
-		/*
-		 * 让我们假设我们只想返回支持MacOS平台的游戏。
-		 * 实际上，我们需要对steamGames数据集进行过滤，删除任何不支持MacOS的游戏。
-		 * 我们可以使用flatmap函数来完成这个任务，与基本map不同，它可以选择返回0个项目，
-		 * 因为它的输出是一个集合的迭代器。
-		 */
+		// Lets assume that we only want to return games that support MacOS as a platform. In effect we need to filter the steamGames dataset to remove
+		// any games that do not support MacOS. We can do this using a flatmap function, which unlike a basic map, can opt to return 0 items since its
+		// output is an iterator over a collection.
 
-		// 我已经包含了一个预建的flatmap函数（一个扩展了FlatMapFunction<InputType,OutputType>的类），所以让我们创建一个
+		// I have included a pre-built flatmap function (a class that extends FlatMapFunction<InputType,OutputType>), so lets create one
 		PlatformFilterFlatMap macSupportFilter = new PlatformFilterFlatMap(includePC,includeLinux,includeMac); // pc=false, linux=false, mac=true
 
-		/*
-		 * 然后，我们可以通过调用flatmap来获取steamGames数据集并应用我们的过滤器，
-		 * 创建一个新的过滤过的数据集。
-		 * 和前面的map函数一样，该函数的输出类型是SteamGameStats对象，
-		 * 所以我们可以重新使用之前创建的该类型的编码器 
-		 */
+		// We can then take the steamGames dataset and apply our filter by calling flatmap, creating a new filtered dataset
+		// As with our map function earlier, the output type of the function are SteamGameStats objects, so we can re-use the encoder for that type created earlier 
 		Dataset<SteamGameStats> macSteamGames = steamGames.flatMap(macSupportFilter, steamGameStatsEncoder);
 
-		// 现在我们想提取metacritic分数，所以让我们执行一个从SteamGameStats到整数的映射（metacritic分数）。
+		// Now we want to extract the metacritic scores, so lets perform a map from SteamGameStats to an integer (the metacritic score)
 		Dataset<Integer> metaCriticScores = macSteamGames.map(new SteamGameToMetaCriticScoreMap(), Encoders.INT());
 		
-
-		/*
-		 * 现在我们有了metacritic的分数，
-		 * 我们可以使用一个reducer以并行的方式对它们进行求和 
-		 * reduce也是一个动作，所以这将触发到这一点的处理 
-		 */
+		// Now that we have the metacritic scores, we can use a reducer to sum them in a parallel fashion
+		// reduce is also an action, so this will trigger processing up to this point 
 		Integer metaCriticScoreSUM = metaCriticScores.reduce(new IntSumReducer());
 		
-		// 我们还需要游戏的数量来计算平均数
+		// We also need the number of games to calculate the average...
 		long numGames = metaCriticScores.count();
 		
-		// 现在让我们计算一下平均数
-		double averageMetaCriticScore = (1.0*metaCriticScoreSUM)/numGames; // 注意，我在除法前将metaCriticScoreSUM乘以1.0转换为double，否则会发生四舍五入的情况。
-		spark.close(); // 关闭会话，现在我们已经完成了它。
+		// Now lets calculate the average
+		double averageMetaCriticScore = (1.0*metaCriticScoreSUM)/numGames; // note that I multiply metaCriticScoreSUM by 1.0 to convert it to a double before division, otherwise rounding will happen
+		
+		spark.close(); // close down the session now we are done with it
 
 		return averageMetaCriticScore;
 	}
 
 	/**
-	 * 这是主方法，它将建立一个新的本地Spark会话
-	 * 并运行示例应用程序以检查环境是否设置正确。
+	 * This is the main method that will set up a new local Spark session
+	 * and run the example app to check that the environment is set up
+	 * correctly.
 	 * @param args
 	 */
 	public static void main(String[] args) {

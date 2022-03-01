@@ -159,7 +159,6 @@ public class SparkTutorial1 {
 			System.out.println((gameIndex+1)+": "+gameTitle); // print to standard output
 		}
 		
-		
 	}
 	
 }

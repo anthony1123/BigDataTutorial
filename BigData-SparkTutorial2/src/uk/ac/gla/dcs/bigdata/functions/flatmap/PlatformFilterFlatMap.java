@@ -9,11 +9,13 @@ import org.apache.spark.api.java.function.FlatMapFunction;
 import uk.ac.gla.dcs.bigdata.structures.SteamGameStats;
 
 /**
- *  这是一个FlatMapFunction的例子，在本例中，它根据Steam游戏所支持的平台，充当一个过滤器。
- *  该类的构造函数（最初在驱动程序上创建）存储了过滤器的选项，
- *  然后当为每个游戏调用flatmap时，调用方法将返回一个迭代器，
- *  如果游戏符合指定的平台，则返回一个迭代器，如果不符合则返回一个空迭代器。
+ * This is an example of a FlatMapFunction, which in this case acts as a filter for
+ * Steam games based on what platforms they support. The constructor of the class
+ * (initially created on the driver program) stores what the filter options are, then
+ * when flatmap is called for each game, the call method will either return an iterator
+ * with the game if it matches the specified platforms, or an empty iterator if not.
  * @author Richard
+ *
  */
 public class PlatformFilterFlatMap implements FlatMapFunction<SteamGameStats,SteamGameStats>{
 
@@ -24,8 +26,8 @@ public class PlatformFilterFlatMap implements FlatMapFunction<SteamGameStats,Ste
 	boolean supportsMac;
 	
 	/**
-	 * 默认构造函数，指定游戏必须支持的平台
-	 * 不被过滤掉
+	 * Default constructor, specifies the platforms that the game must support
+	 * not to be filtered out
 	 * @param pc
 	 * @param linux
 	 * @param mac
@@ -40,20 +42,22 @@ public class PlatformFilterFlatMap implements FlatMapFunction<SteamGameStats,Ste
 	public Iterator<SteamGameStats> call(SteamGameStats game) throws Exception {
 		
 		boolean matchesFilters = true;
-		// 检查每个过滤选项，如果任何选项未通过检查，则设置 match=false
+		
+		// check each filtering option, set match=false if any options fail the check
 		if (supportsPC && !game.isPlatformwindows()) matchesFilters = false;
 		if (supportsLinux && !game.isPlatformlinux()) matchesFilters = false;
 		if (supportsMac && !game.isPlatformmac()) matchesFilters = false;
 		
 		if (matchesFilters) {
-			// 游戏通过了我们所有的检查，所以返回它创建迭代器的方式是通过一个集合，例如一个列表
-			List<SteamGameStats> gameList  = new ArrayList<SteamGameStats>(1); // 创建一个大小为 1 的空数组
-			gameList.add(game); // 添加游戏
-			return gameList.iterator(); // 返回列表的迭代器
+			// the game passed all our checks, so return it
+			// the way to create an iterator is via a collection, e.g. a list
+			List<SteamGameStats> gameList  = new ArrayList<SteamGameStats>(1); // create an empty array of size 1
+			gameList.add(game); // add the game
+			return gameList.iterator(); // return the iterator for the list
 		} else {
-			// // 如果其中一项检查失败，不返回任何内容
-			List<SteamGameStats> gameList  = new ArrayList<SteamGameStats>(0); // 创建一个大小为 0 的空数组
-			return gameList.iterator(); // 返回空列表的迭代器
+			// if one of the check fails we want to return nothing
+			List<SteamGameStats> gameList  = new ArrayList<SteamGameStats>(0); // create an empty array of size 0
+			return gameList.iterator(); // return the iterator for the empty list
 
 		}
 	}

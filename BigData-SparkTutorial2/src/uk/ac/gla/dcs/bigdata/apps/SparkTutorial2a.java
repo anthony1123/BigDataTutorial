@@ -16,17 +16,18 @@ import uk.ac.gla.dcs.bigdata.functions.map.SteamStatsFormatter;
 import uk.ac.gla.dcs.bigdata.structures.SteamGameStats;
 
 /**
+ * This is the second Apache Spark tutorial application (part B), it contains a basic pre-built Spark
+ * app that you can run to make sure that your environment is set up correctly, with examples
+ * of both a map and flatmap function.
  * @author Richard
- * 这是第二个 Apache Spark 教程应用程序（B 部分），
- * 它包含一个基本的预构建(pre-built) Spark 应用程序，您可以运行该应用程序以确保您的环境设置正确，
- * 并提供了示例both a map and flatmap function。
+ *
  */
 public class SparkTutorial2a {
 
 	public SparkTutorial2a() {}
 	
 	/**
-	 * 按推荐数量对 Steam 游戏进行排名，包括按支持的平台过滤
+	 * Ranks Steam games by recommendation count, includes filtering by supported platform
 	 * @param includePC - include PC games
 	 * @param includeLinux - include Linux games
 	 * @param includeMac - include MacOS games
@@ -34,38 +35,76 @@ public class SparkTutorial2a {
 	 */
 	public List<SteamGameStats> getRankSteamGames(boolean includePC, boolean includeLinux, boolean includeMac) {
 		
-
-				File hadoopDIR = new File("resources/hadoop/");
-				System.setProperty("hadoop.home.dir", hadoopDIR.getAbsolutePath());
-
+				// Spark relies on some legacy components of hadoop to manage data input/output, this means we need to
+				// give Spark a copy of some hadoop executables, in this case we have included a copy of these in the
+				// resources/hadoop/ directory.
+				File hadoopDIR = new File("resources/hadoop/"); // represent the hadoop directory as a Java file so we can get an absolute path for it
+				System.setProperty("hadoop.home.dir", hadoopDIR.getAbsolutePath()); // set the JVM system property so that Spark finds it
+				
+				// SparkConf is the configuration for the spark session we are going to create
+				// setMaster specifies how we want the application to be run, in this case in local mode with 2 cores
+				// setAppName specifies the name of the spark session we will create, this is in effect a unique identifier for our session
 				SparkConf conf = new SparkConf()
 						.setMaster("local[2]")
-						.setAppName("SparkTutorial2a");
+						.setAppName("SparkTutorial1");
 				
+				
+				// To run a Spark job we need to create a SparkSession, in local mode, this creates a temporary spark cluster
+				// on your local machine to run the job on.
 				SparkSession spark = SparkSession
 						  .builder()
 						  .config(conf)
 						  .getOrCreate();
-
+						
+				// --------------------------------------------------------------------------------------
+				// Spark Application Topology Starts Here
+				// --------------------------------------------------------------------------------------
+				
+				//-----------------------------------------
+				// Data Input
+				//-----------------------------------------
+				// Lets read in some statistics of Steam games from a file
 				Dataset<Row> steamGamesAsRowTable = spark
 						.read()
 						.option("header", "true")
 						.csv("data/Steam/games_features.sample.csv");
 
+				// Row objects are a general representation of data items in Spark, a Dataset<Row> represents a set of Rows, i.e. its like a Table
+				// Dataset<Row> support lots of out-of-the-box transformations using Spark SQL, but as we are more interested in what happens 'under-the-hood'
+				// in Spark, we will be converting our Rows to more specialist data types 
+				
+				
+				//-----------------------------------------
+				// Data Transformations
+				//-----------------------------------------
+				
+				// As a simple test, lets convert each Row object to a SteamGameStats object, such that we have easier access to get/set methods for each
+				
+				// Spark needs to understand how to serialise (i.e. package for storage or network transfer) any Java object type we are going to use, since 
+				// in a distributed setting our transformations may happen on different machines, or intermediate results may need to be stored between processing
+				// stages. We do this by defining an Encoder for the object. In this case, we going to use a new class SteamGameStats, so we need an encoder for it.
+				// Encoders.bean() can be used to automatically construct an encoder for an object, so long as the object 1) is not native (e.g. an int or String) and
+				// the object is inherently Serializable. If dealing with native Java types then you can use Encoders.<NativeType>(), e.g. Encoders.STRING().
 				Encoder<SteamGameStats> steamGameStatsEncoder = Encoders.bean(SteamGameStats.class);
-	
+				
+				// In Spark, data tranformations are specified by calling transformation functions on Datasets
+				// The most basic transformation is 'map', this converts each item in the dataset to a new item (that may be of a different type)
+				// The map function takes as input two parameters
+				//   - A class that implements MapFunction<InputType,OutputType>
+				//   - An encoder for the output type (which we just created in the previous step)
 				Dataset<SteamGameStats> steamGames = steamGamesAsRowTable.map(new SteamStatsFormatter(), steamGameStatsEncoder);
 				
 				//-----------------------------------------
 				// Tutorial 2a Additions
 				//-----------------------------------------
-
-				/*
-				 * 假设我们只想返回支持 Macos 作为平台的游戏。实际上，我们需要过滤 steamGames 数据集以删除任何不支持 Macos 的游戏。
-				 * 我们可以使用 flatmap 函数来做到这一点，与基本map function不同，它可以选择返回 0 个项目，因为它的输出是集合上的迭代器(iterator)。
-				 * 首先，让我们看看我们总共有多少游戏，可以使用 dataset.count() 方法(这是一个spark动作)
-				 * 所以所有创建被统计对象（本例中为Dataset<SteamGameStats> steamGames）所需的处理都会在调用统计前完成。
-				 */
+				
+				// Lets assume that we only want to return games that support MacOS as a platform. In effect we need to filter the steamGames dataset to remove
+				// any games that do not support MacOS. We can do this using a flatmap function, which unlike a basic map, can opt to return 0 items since its
+				// output is an iterator over a collection.
+				
+				// First, lets see how many games we have in total, we can use the dataset.count() method for this
+				// note this is a spark action, so all processing needed to create the object being counted (Dataset<SteamGameStats> steamGames in this case)
+				// will be completed before the count will be called.
 				long numGames = steamGames.count();
 				
 				// lets print that

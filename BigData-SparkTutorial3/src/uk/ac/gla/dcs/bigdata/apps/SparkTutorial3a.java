@@ -26,22 +26,17 @@ public class SparkTutorial3a {
 	 */
 	public static void main(String[] args) {
 		
-				// Spark relies on some legacy components of hadoop to manage data input/output, this means we need to
-				// give Spark a copy of some hadoop executables, in this case we have included a copy of these in the
-				// resources/hadoop/ directory.
-				File hadoopDIR = new File("resources/hadoop/"); // represent the hadoop directory as a Java file so we can get an absolute path for it
-				System.setProperty("hadoop.home.dir", hadoopDIR.getAbsolutePath()); // set the JVM system property so that Spark finds it
+				 
+				File hadoopDIR = new File("resources/hadoop/");
+				System.setProperty("hadoop.home.dir", hadoopDIR.getAbsolutePath());
 				
-				// SparkConf is the configuration for the spark session we are going to create
-				// setMaster specifies how we want the application to be run, in this case in local mode with 2 cores
-				// setAppName specifies the name of the spark session we will create, this is in effect a unique identifier for our session
+				// SparkConf是我们要创建的火花会话的配置。
+				// setMaster指定了我们希望应用程序的运行方式，在本例中是本地模式下的2个核心。
+				// setAppName指定我们将创建的spark会话的名称，这实际上是我们会话的唯一标识符。
 				SparkConf conf = new SparkConf()
 						.setMaster("local[2]")
 						.setAppName("SparkTutorial3a");
-				
-				
-				// To run a Spark job we need to create a SparkSession, in local mode, this creates a temporary spark cluster
-				// on your local machine to run the job on.
+
 				SparkSession spark = SparkSession
 						  .builder()
 						  .config(conf)
@@ -50,20 +45,12 @@ public class SparkTutorial3a {
 				// --------------------------------------------------------------------------------------
 				// Spark Application Topology Starts Here
 				// --------------------------------------------------------------------------------------
-				
-				//-----------------------------------------
-				// Data Input
-				//-----------------------------------------
-				// Lets read in some statistics of Steam games from a file
+
 				Dataset<Row> steamGamesAsRowTable = spark
 						.read()
 						.option("header", "true")
 						.csv("data/Steam/games_features.sample.csv");
 
-				// Row objects are a general representation of data items in Spark, a Dataset<Row> represents a set of Rows, i.e. its like a Table
-				// Dataset<Row> support lots of out-of-the-box transformations using Spark SQL, but as we are more interested in what happens 'under-the-hood'
-				// in Spark, we will be converting our Rows to more specialist data types 
-				
 				
 				//-----------------------------------------
 				// Data Transformations
@@ -78,42 +65,39 @@ public class SparkTutorial3a {
 				// the object is inherently Serializable. If dealing with native Java types then you can use Encoders.<NativeType>(), e.g. Encoders.STRING().
 				Encoder<SteamGameStats> steamGameStatsEncoder = Encoders.bean(SteamGameStats.class);
 				
-				// In Spark, data tranformations are specified by calling transformation functions on Datasets
-				// The most basic transformation is 'map', this converts each item in the dataset to a new item (that may be of a different type)
-				// The map function takes as input two parameters
-				//   - A class that implements MapFunction<InputType,OutputType>
-				//   - An encoder for the output type (which we just created in the previous step)
+				/*
+				 * 在Spark中，数据转换是通过调用数据集的转换函数来指定的。
+				 * 最基本的转换是 "map"，它将数据集中的每个项目转换为一个新的项目（可能是不同的类型）。
+				 * map函数接受两个参数作为输入。
+				 * 	- 一个实现MapFunction<InputType,OutputType>的类。
+				 * 	- 一个输出类型的编码器（我们在上一步中刚刚创建了这个编码器）
+				 */
 				Dataset<SteamGameStats> steamGames = steamGamesAsRowTable.map(new SteamStatsFormatter(), steamGameStatsEncoder);
 				
 				//-----------------------------------------
 				// Tutorial 3a Additions
 				//-----------------------------------------
 				
-				// Lets assume that we want to figure out the average price of games with different metacritic scores (e.g to see if they
-				// are correlated)
-				
-				// First, we need to group our games based on their MetaCritic scores, to do this we are going to need a new MapFunction that extracts a key for
-				// for each game (where the key is the metacritic score)
+				/*
+				 * 假设我们想算出具有不同metacritic分数的游戏的平均价格（例如，看它们是否有关联）。
+				 * 首先，我们需要根据游戏的MetaCritic分数对其进行分组，
+				 * 为此我们需要一个新的MapFunction，为每个游戏提取一个键（其中键是metacritic分数）
+				 */
 				GameToMetaCriticScore keyFunction = new GameToMetaCriticScore();
 				
-				// Now we can apply this function to our game list to get a new dataset grouped by this key
+				// 现在，我们可以将这个函数应用于我们的游戏列表，以获得一个按该键分组的新数据集
 				KeyValueGroupedDataset<Integer, SteamGameStats> gamesByMetaCriticScore = steamGames.groupByKey(keyFunction, Encoders.INT());
 				
-				// We want to calculate the average price for each metacritic score bracket, to do that we are going to need to
-				// implement a new MapGroupsFunction that will aggregate all games for each key (metacritic score)
-				AVGPrice priceAggregator = new AVGPrice();
-				
-				// Importantly, to make the output of the above aggregation useful, we want to return both the metacritic score AND the average
-				// price. We could define our own java class for storing this information, but we can use Spark's built-in Tuple specification
-				// to do this, i.e. instead of returning a Dataset<MyType>, we instead return a Dataset<Tuple2<Integer,Double>>, which is what
-				// AVGPrice does.
-				
-				// Notably, we will need an encoder for Tuple2, luckily the Encoders class provides us a method to build TupleX encoders:
-				// In this case the .tuple method builds a Tuple encoder based on encoders for the types contained within the tuple.
+				// 我们想计算每个metacritic分数段的平均价格，为此我们需要实现一个新的MapGroupsFunction，它将汇总每个键（metacritic分数）的所有游戏。
+				AVGPrice priceAggregator = new AVGPrice();				
+				/*
+				 * 重要的是，为了使上述聚合的输出有用，我们希望同时返回metacritic分数和平均价格。
+				 * 我们可以定义我们自己的java类来存储这些信息，但是我们可以使用Spark内置的Tuple规范来做到这一点，即不返回Dataset<MyType>，
+				 * 而是返回Dataset<Tuple2<Integer,Double>>，这就是AVGPrice的作用。值得注意的是，我们将需要一个Tuple2的编码器，
+				 * 幸运的是Encoders类为我们提供了一个建立TupleX编码器的方法。在这种情况下，.tuple方法根据元组中包含的类型的编码器来建立一个元组编码器。
+				 */
 				Encoder<Tuple2<Integer,Double>> scorePriceEncoder = Encoders.tuple(Encoders.INT(), Encoders.DOUBLE());
-				
-
-				// Now we can apply it to get a set of the average price of games in each price bracket
+				// 现在我们可以应用它来得到一组每个价格段的游戏的平均价格
 				Dataset<Tuple2<Integer,Double>> scoresAndPrices = gamesByMetaCriticScore.mapGroups(priceAggregator, scorePriceEncoder);
 
 				//-----------------------------------------

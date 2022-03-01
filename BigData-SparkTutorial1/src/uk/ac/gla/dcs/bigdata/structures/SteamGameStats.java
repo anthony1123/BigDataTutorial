@@ -827,8 +827,4 @@ public class SteamGameStats implements Serializable,Comparable<SteamGameStats> {
 		return new Integer(recommendationcount).compareTo(o.recommendationcount);
 	}
 	
-	
-	
-
-	
 }
